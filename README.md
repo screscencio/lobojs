@@ -49,3 +49,43 @@ Created and maintained by [@screscencio](https://github.com/screscencio)
 Original author of Lobo Continuous Tuning (OnCast, c. 2005)
 
 ---
+
+## Architecture
+
+LoboJS is organized into modular packages:
+
+- **src/core**: Core telemetry and profiling primitives.
+- **src/tasks**: Profile discovery and execution engine.
+- **src/io**: JSON-based persistence of performance data.
+- **src/merge**: Logic to merge multiple run results.
+- **src/report**: Reporting and visualization generators.
+- **src/eval**: Threshold evaluation and regression detection.
+- **src/cli.js**: Command-line interface entry point.
+- **bin/lobo**: Executable CLI script.
+
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run performance profiles:
+   ```bash
+   npx lobo run path/to/tests
+   ```
+3. Merge runs:
+   ```bash
+   npx lobo merge run1.json run2.json -o merged.json
+   ```
+4. Generate report:
+   ```bash
+   npx lobo report merged.json -o report
+   ```
+5. Evaluate thresholds:
+   ```bash
+   npx lobo evaluate merged.json
+   ```
+
+---
+
+---
