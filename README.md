@@ -58,7 +58,7 @@ LoboJS is organized into modular packages:
 - **src/tasks**: Profile discovery and execution engine.
 - **src/io**: JSON-based persistence of performance data.
 - **src/merge**: Logic to merge multiple run results.
-- **src/report**: Reporting and visualization generators.
+- **src/report**: Reporting and visualization (JSON summary + interactive HTML/D3 charts).
 - **src/eval**: Threshold evaluation and regression detection.
 - **src/cli.js**: Command-line interface entry point.
 - **bin/lobo**: Executable CLI script.
@@ -79,10 +79,11 @@ LoboJS is organized into modular packages:
    ```bash
    npx lobo merge run1.json run2.json -o merged.json
    ```
-4. Generate report:
+4. Generate report (JSON summary + interactive HTML/D3 chart):
    ```bash
    npx lobo report merged.json -o report
    ```
+   → Writes `report/summary.json` and `report/index.html` (open in browser for visualization)
 5. Evaluate thresholds (defaults to `./thresholds.json`, or pass custom file):
    ```bash
    npx lobo evaluate merged.json

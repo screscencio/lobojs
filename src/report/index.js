@@ -45,4 +45,11 @@ module.exports = async function report(input, outDir) {
     return { Name: m.name, Duration: m.duration.toFixed(2) };
   });
   console.table(table);
+
+  const templatePath = path.join(__dirname, 'template.html');
+  let template = await fs.readFile(templatePath, 'utf8');
+  template = template.replace('/*__SUMMARY_JSON__*/', JSON.stringify(summary));
+  const htmlFile = path.join(outDir, 'index.html');
+  await fs.writeFile(htmlFile, template, 'utf8');
+  console.log(chalk.green(`HTML report written to ${htmlFile}`));
 };

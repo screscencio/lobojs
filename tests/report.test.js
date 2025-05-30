@@ -32,4 +32,20 @@ describe('report', () => {
       { name: 'x', duration: 123, stats: null, durations: null }
     ]);
   });
+
+  test('also generates interactive HTML report with D3.js and branding', async () => {
+    const inputFile = path.join(tmpDir, 'input.json');
+    const data = {
+      timestamp: '2020-01-01T00:00:00Z',
+      metrics: [{ name: 'x', duration: 123 }]
+    };
+    await io.write(inputFile, data);
+    await report(inputFile, tmpDir);
+    const htmlPath = path.join(tmpDir, 'index.html');
+    const html = await fs.readFile(htmlPath, 'utf8');
+    expect(html).toContain('<!DOCTYPE html>');
+    expect(html).toContain('d3.v7.min.js');
+    expect(html).toMatch(/<h1>Performance Report<\/h1>/);
+    expect(html).toMatch(/"name":"x"/);
+  });
 });
