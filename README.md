@@ -65,13 +65,15 @@ LoboJS is organized into modular packages:
 
 ## Getting Started
 
-1. Install dependencies:
+1. Install dependencies (requires Node.js LTS; recommended `nvm use` will auto‑select version):
    ```bash
    npm install
    ```
-2. Run performance profiles:
+2. Run performance profiles (scan files or directories; specify output JSON if desired):
    ```bash
    npx lobo run path/to/tests
+# → ./results.json
+   npx lobo run path/to/tests -o my-results.json
    ```
 3. Merge runs:
    ```bash
@@ -81,9 +83,10 @@ LoboJS is organized into modular packages:
    ```bash
    npx lobo report merged.json -o report
    ```
-5. Evaluate thresholds:
+5. Evaluate thresholds (defaults to `./thresholds.json`, or pass custom file):
    ```bash
    npx lobo evaluate merged.json
+   npx lobo evaluate merged.json -t path/to/thresholds.json
    ```
 
 ---

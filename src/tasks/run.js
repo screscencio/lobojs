@@ -2,10 +2,19 @@
  * Runs performance profiles found in specified files or directories.
  * Scans for profile declarations and executes them.
  */
-module.exports = async function run(files) {
+module.exports = async function run(files, outputFile = 'results.json') {
   const fs = require('fs').promises;
   const path = require('path');
-  const { default: chalk } = await import('chalk');
+  let chalk;
+  try {
+    chalk = require('chalk');
+  } catch {
+    try {
+      chalk = (await import('chalk')).default;
+    } catch {
+      chalk = { green: (x) => x, blue: (x) => x, yellow: (x) => x, red: (x) => x };
+    }
+  }
   const Telemetry = require('../core/telemetry');
   const io = require('../io');
 
@@ -51,7 +60,6 @@ module.exports = async function run(files) {
     metrics,
   };
 
-  const outputFile = 'results.json';
   await io.write(outputFile, result);
   console.log(chalk.green(`Results written to ${outputFile}`));
 };

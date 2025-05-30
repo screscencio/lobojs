@@ -22,8 +22,15 @@ program
   .command('run')
   .description('Run performance profiles')
   .argument('[files...]', 'Files or directories to scan for profiles')
-  .action((files) => {
-    run(files);
+  .option('-o, --output <file>', 'Output JSON file', 'results.json')
+  .action(async (files, options) => {
+    try {
+      await run(files, options.output);
+      process.exit(0);
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
   });
 
 program
@@ -31,8 +38,14 @@ program
   .description('Merge multiple performance result files')
   .argument('<inputs...>', 'List of result files to merge')
   .option('-o, --output <file>', 'Output file', 'merged.json')
-  .action((inputs, options) => {
-    merge(inputs, options.output);
+  .action(async (inputs, options) => {
+    try {
+      await merge(inputs, options.output);
+      process.exit(0);
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
   });
 
 program
@@ -40,8 +53,14 @@ program
   .description('Generate reports from result files')
   .argument('<file>', 'Result file to report on')
   .option('-o, --output <dir>', 'Output directory', 'report')
-  .action((file, options) => {
-    report(file, options.output);
+  .action(async (file, options) => {
+    try {
+      await report(file, options.output);
+      process.exit(0);
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
   });
 
 program
@@ -49,8 +68,20 @@ program
   .alias('eval')
   .description('Evaluate performance against thresholds')
   .argument('<file>', 'Result file to evaluate')
-  .action((file) => {
-    evaluate(file);
+  .option('-t, --thresholds <file>', 'Thresholds JSON file')
+  .action(async (file, options) => {
+    try {
+      const { overallPass, results } = await evaluate(file, options.thresholds);
+      if (overallPass) {
+        console.log('All metrics are within thresholds.');
+      } else {
+        console.error('Some metrics exceeded thresholds.');
+      }
+      process.exit(overallPass ? 0 : 1);
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
   });
 
 program.parse(process.argv);
