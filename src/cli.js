@@ -84,4 +84,27 @@ program
     }
   });
 
+// CI/CD pipeline wrapper: run → merge → report → evaluate in one command
+program
+  .command('ci')
+  .description('Run, merge, report and evaluate in one step (for CI/CD)')
+  .option('-p, --paths <paths...>', 'paths to scan for profiles', ['.'])
+  .option('-o, --output-dir <dir>', 'output directory for results and reports', '.')
+  .option('-t, --thresholds <file>', 'thresholds JSON file', 'thresholds.json')
+  .action(async (opts) => {
+    const path = require('path');
+    try {
+      const runOut = path.join(opts.outputDir, 'run.json');
+      await run(opts.paths, runOut);
+      const mergedOut = path.join(opts.outputDir, 'merged.json');
+      await merge([runOut], mergedOut);
+      await report(mergedOut, opts.outputDir);
+      const { overallPass } = await evaluate(mergedOut, opts.thresholds);
+      process.exit(overallPass ? 0 : 1);
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
+  });
+
 program.parse(process.argv);

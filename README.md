@@ -90,6 +90,26 @@ LoboJS is organized into modular packages:
    npx lobo evaluate merged.json -t path/to/thresholds.json
    ```
 
+6. One‑step CI/CD integration:
+
+   ```bash
+   npx lobo ci -p ./profiles -t thresholds.json
+   ```
+
+You can also add an NPM script in your `package.json`:
+
+```json
+"scripts": {
+  "perf:ci": "lobo ci -p ./profiles -t thresholds.json"
+}
+```
+
+Then simply run:
+
+```bash
+npm run perf:ci
+```
+
 ---
 
 ---
