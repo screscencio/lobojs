@@ -1,9 +1,17 @@
 const profile = require('../src/core/profile');
+const Telemetry = require('../src/core/telemetry');
 
 describe('profile', () => {
-  test('should execute function and return its result', async () => {
-    const result = await profile('example', () => 42);
-    expect(result).toBe(42);
-    // TODO: assert metric recorded properly
+  beforeEach(() => {
+    Telemetry.clear();
+  });
+
+  test('executes function, returns its result and records metric', async () => {
+    const result = await profile('example', () => 123);
+    expect(result).toBe(123);
+    const metrics = Telemetry.getMetrics();
+    expect(metrics).toHaveLength(1);
+    expect(metrics[0].name).toBe('example');
+    expect(metrics[0].duration).toBeGreaterThanOrEqual(0);
   });
 });
