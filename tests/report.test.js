@@ -11,9 +11,6 @@ describe('report', () => {
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'lobo-report-'));
   });
 
-  afterEach(async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
-  });
 
   test('writes summary.json with mapped metrics for single-run input', async () => {
     const inputFile = path.join(tmpDir, 'input.json');
@@ -29,7 +26,13 @@ describe('report', () => {
     expect(summary).toHaveProperty('reportedAt');
     expect(summary.source).toBe(inputFile);
     expect(summary.metrics).toEqual([
-      { name: 'x', duration: 123, stats: null, durations: null }
+      {
+        name: 'x',
+        duration: 123,
+        stats: null,
+        durations: [123],
+        timestamps: ['2020-01-01T00:00:00Z'],
+      }
     ]);
   });
 
@@ -44,8 +47,13 @@ describe('report', () => {
     const htmlPath = path.join(tmpDir, 'index.html');
     const html = await fs.readFile(htmlPath, 'utf8');
     expect(html).toContain('<!DOCTYPE html>');
-    expect(html).toContain('d3.v7.min.js');
+    expect(html).toContain('vega-embed');
+    expect(html).toContain('vega-lite');
     expect(html).toMatch(/<h1>Performance Report<\/h1>/);
     expect(html).toMatch(/"name":"x"/);
+    expect(html).toContain('"timestamps":["2020-01-01T00:00:00Z"]');
+    expect(html).toMatch(/aggregate:\s*'min'/);
+    expect(html).toMatch(/aggregate:\s*'max'/);
+    expect(html).toMatch(/aggregate:\s*'mean'/);
   });
 });

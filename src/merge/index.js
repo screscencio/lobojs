@@ -21,21 +21,27 @@ module.exports = async function merge(inputs, output) {
   );
 
   const durationsByName = new Map();
-  results.forEach(({ metrics }) => {
+  const timestampsByName = new Map();
+  results.forEach(({ timestamp, metrics }) => {
     (metrics || []).forEach(({ name, duration }) => {
-      if (!durationsByName.has(name)) durationsByName.set(name, []);
+      if (!durationsByName.has(name)) {
+        durationsByName.set(name, []);
+        timestampsByName.set(name, []);
+      }
       durationsByName.get(name).push(duration);
+      timestampsByName.get(name).push(timestamp);
     });
   });
 
   const mergedMetrics = [];
   durationsByName.forEach((durations, name) => {
+    const timestamps = timestampsByName.get(name) || [];
     const count = durations.length;
     const min = Math.min(...durations);
     const max = Math.max(...durations);
     const sum = durations.reduce((sum, d) => sum + d, 0);
     const avg = sum / count;
-    mergedMetrics.push({ name, durations, stats: { count, min, max, avg } });
+    mergedMetrics.push({ name, durations, timestamps, stats: { count, min, max, avg } });
   });
 
   const merged = {
@@ -45,5 +51,7 @@ module.exports = async function merge(inputs, output) {
   };
 
   await io.write(output, merged);
-  console.log(`Merged ${inputs.length} files into ${output}`);
+  if (process.env.LOBOJS_KEEP_TEST_ARTIFACTS) {
+    console.log(`Merged ${inputs.length} files into ${output}`);
+  }
 };

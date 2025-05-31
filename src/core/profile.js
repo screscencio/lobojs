@@ -6,10 +6,16 @@ const Telemetry = require('./telemetry');
  * @param {Function} fn - Function to be profiled.
  * @returns {Promise<*>} The result of the function under profiling.
  */
-async function profile(name, fn) {
+function profile(name, fn) {
   Telemetry.startMetric(name);
-  const result = await fn();
-  await Telemetry.endMetric(name);
+  const result = fn();
+  if (result && typeof result.then === 'function') {
+    return result.then(res => {
+      Telemetry.endMetric(name);
+      return res;
+    });
+  }
+  Telemetry.endMetric(name);
   return result;
 }
 

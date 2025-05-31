@@ -23,11 +23,10 @@
     .axis line {
       stroke: #4a4a5b;         /* leanItBackgroundLight */
     }
-    .bar {
-      fill: #ff8010;            /* leanit101Orange */
-    }
   </style>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
 </head>
 <body>
   <h1>Performance Report</h1>
@@ -39,53 +38,68 @@
     document.getElementById('reportDate').textContent = summary.reportedAt;
     const metrics = summary.metrics;
 
-    // prepare data: use avg if stats present, otherwise duration
-    const data = metrics.map(m => ({
-      name: m.name,
-      value: m.stats ? m.stats.avg : m.duration
-    }));
+    metrics.forEach(m => {
+      const durations = m.durations || (m.duration != null ? [m.duration] : []);
+      const timestamps = m.timestamps || [];
+      const data = durations.map((value, i) => ({
+        timestamp: timestamps[i],
+        value,
+      }));
 
-    const margin = { top: 20, right: 30, bottom: 40, left: 60 };
-    const width = 800 - margin.left - margin.right;
-    const height = 400 - margin.top - margin.bottom;
+      const spec = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        description: m.name,
+        width: 800,
+        height: 400,
+        background: 'transparent',
+        data: { values: data },
+        selection: {
+          grid: { type: 'interval', bind: 'scales' }
+        },
+        config: {
+          axis: { labelColor: '#606078', titleColor: '#606078' },
+          view: { stroke: 'transparent' }
+        },
+        layer: [
+          {
+            mark: { type: 'area', interpolate: 'monotone', color: '#4a4a5b', opacity: 0.3 }
+          },
+          {
+            mark: { type: 'line', interpolate: 'monotone', color: '#ff8010', strokeWidth: 2 }
+          },
+          {
+            mark: { type: 'rule', color: '#0e7597', strokeWidth: 1, strokeDash: [2,2] },
+            encoding: { y: { aggregate: 'min', field: 'value' } }
+          },
+          {
+            mark: { type: 'rule', color: '#06485d', strokeWidth: 1, strokeDash: [2,2] },
+            encoding: { y: { aggregate: 'max', field: 'value' } }
+          },
+          {
+            mark: { type: 'rule', color: '#606078', strokeWidth: 1, strokeDash: [4,2] },
+            encoding: { y: { aggregate: 'mean', field: 'value' } }
+          }
+        ],
+        encoding: {
+          x: {
+            field: 'timestamp', type: 'temporal', title: 'Timestamp',
+            axis: { format: '%Y-%m-%d %H:%M:%S', labelAngle: -45 }
+          },
+          y: { field: 'value', type: 'quantitative', title: 'Duration (ms)' },
+          tooltip: [
+            { field: 'timestamp', type: 'temporal', title: 'Time' },
+            { field: 'value', type: 'quantitative', title: 'Duration' }
+          ]
+        }
+      };
 
-    const svg = d3.select('#chart')
-      .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+      const chartDiv = document.createElement('div');
+      chartDiv.style.marginTop = '20px';
+      document.getElementById('chart').appendChild(chartDiv);
 
-    const x = d3.scaleBand()
-      .domain(data.map(d => d.name))
-      .range([0, width])
-      .padding(0.1);
-
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.value)])
-      .nice()
-      .range([height, 0]);
-
-    svg.append('g')
-      .attr('class', 'axis x-axis')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x))
-      .selectAll('text')
-      .attr('transform', 'rotate(-45)')
-      .style('text-anchor', 'end');
-
-    svg.append('g')
-      .attr('class', 'axis y-axis')
-      .call(d3.axisLeft(y));
-
-    svg.selectAll('.bar')
-      .data(data)
-      .enter().append('rect')
-      .attr('class', 'bar')
-      .attr('x', d => x(d.name))
-      .attr('y', d => y(d.value))
-      .attr('width', x.bandwidth())
-      .attr('height', d => height - y(d.value));
+      vegaEmbed(chartDiv, spec, { renderer: 'canvas', actions: false })
+        .catch(console.error);
+    });
   </script>
 </body>
 </html>

@@ -5,16 +5,10 @@
 module.exports = async function run(files, outputFile = 'results.json') {
   const fs = require('fs').promises;
   const path = require('path');
-  let chalk;
-  try {
-    chalk = require('chalk');
-  } catch {
-    try {
-      chalk = (await import('chalk')).default;
-    } catch {
-      chalk = { green: (x) => x, blue: (x) => x, yellow: (x) => x, red: (x) => x };
-    }
-  }
+  const chalk = (() => {
+    try { return require('chalk'); }
+    catch { return { blue: (x) => x, green: (x) => x, yellow: (x) => x, red: (x) => x }; }
+  })();
   const Telemetry = require('../core/telemetry');
   const io = require('../io');
 
@@ -51,7 +45,15 @@ module.exports = async function run(files, outputFile = 'results.json') {
   console.log(chalk.green(`Found ${jsFiles.length} JS files. Running profiles...`));
   for (const file of jsFiles) {
     console.log(chalk.blue(`Executing: ${file}`));
-    require(path.resolve(file));
+    const full = path.resolve(file);
+    // clear module cache so profiles re-run on each invocation
+    delete require.cache[full];
+    try {
+      delete require.cache[require.resolve(full)];
+    } catch {
+      // ignore if not in cache
+    }
+    require(full);
   }
 
   const metrics = Telemetry.getMetrics();

@@ -11,9 +11,6 @@ describe('evaluate', () => {
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'lobo-eval-'));
   });
 
-  afterEach(async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
-  });
 
   test('throws if threshold file not found', async () => {
     const input = path.join(tmpDir, 'res.json');

@@ -11,9 +11,6 @@ describe('merge', () => {
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'lobo-merge-'));
   });
 
-  afterEach(async () => {
-    await fs.rm(tmpDir, { recursive: true, force: true });
-  });
 
   test('merges multiple result files into aggregated stats', async () => {
     const file1 = path.join(tmpDir, 'res1.json');

@@ -21,15 +21,15 @@ class Telemetry {
    * @param {string} name - Name of the metric.
    * @throws {Error} If startMetric was not called for the given name.
    */
-  static async endMetric(name) {
-    const start = this._startTimes.get(name);
-    if (start === undefined) {
-      throw new Error(`No start time for metric '${name}'`);
-    }
-    const duration = performance.now() - start;
-    this._metrics.push({ name, duration });
-    this._startTimes.delete(name);
+static endMetric(name) {
+  const start = this._startTimes.get(name);
+  if (start === undefined) {
+    throw new Error(`No start time for metric '${name}'`);
   }
+  const duration = performance.now() - start;
+  this._metrics.push({ name, duration });
+  this._startTimes.delete(name);
+}
 
   /**
    * Retrieve all recorded metrics.
