@@ -151,7 +151,7 @@ Or combined with artifact logging:
 ```bash
 LOBOJS_KEEP_TEST_ARTIFACTS=1 CI=1 npx jest --runInBand
 ```
-- LoboJS prints the summary and HTML report paths as well as the test directory locations, e.g.:
+LoboJS prints the summary and HTML report paths as well as the test directory locations, e.g.:
 
 ```text
 Summary written to /tmp/lobo-report-XXX/summary.json
@@ -160,5 +160,159 @@ Preserving test directory at /tmp/lobo-report-XXX
 ```
 
 ---
+
+## Key Concepts
+
+- **Profiles**: Wrap performance-critical code with `profile(name, fn)` blocks.
+- **Telemetry**: Capture and store named duration metrics.
+- **Merge**: Aggregate runs and compute statistical summaries (min, max, avg).
+- **Report**: Generate interactive HTML/Vega‑Lite reports with line/area charts.
+- **Thresholds**: Define expected maximum durations to flag regressions.
+- **Evaluate**: Compare metrics against thresholds; exit non-zero on failures.
+- **CI Integration**: Orchestrate run, merge, report, and evaluation in one step via `lobo ci`.
+
+---
+
+## Project Structure
+
+```
+lobojs/
+├── bin/lobo                 CLI executable
+├── src/                     Source code
+│   ├── cli.js               CLI definitions
+│   ├── core/                Telemetry & Profile primitives
+│   ├── tasks/               `lobo run` implementation
+│   ├── io/                  JSON read/write
+│   ├── merge/               `lobo merge` implementation
+│   ├── report/              `lobo report` & Vega‑Lite template
+│   └── eval/                `lobo evaluate` implementation
+└── tests/                   Test suites (unit, integration, stress)
+```
+
+---
+
+## Core API
+
+### `profile(name, fn)`
+
+Wrap an async or sync function and record its duration:
+
+```js
+const result = await profile('fetchData', async () => fetch(...));
+```
+
+### `Telemetry`
+
+- `Telemetry.startMetric(name)`  
+- `Telemetry.endMetric(name)` (throws if no matching start)  
+- `Telemetry.getMetrics()`, `Telemetry.clear()`  
+
+---
+
+## Workflow Examples
+
+### Basic sequence
+
+```bash
+npx lobo run ./profiles           -o run.json
+npx lobo merge run.json           -o merged.json
+npx lobo report merged.json       -o report/
+npx lobo evaluate merged.json -t thresholds.json
+```
+
+### One-line CI
+
+```bash
+npx lobo ci -p ./profiles -t thresholds.json
+# or via npm script:
+npm run perf:ci
+```
+
+---
+
+## Output Format
+
+### `run.json` (raw results)
+
+```json
+{
+  "timestamp": "2025-05-30T20:40:00.000Z",
+  "metrics": [
+    { "name": "login", "duration": 32.5 }
+  ]
+}
+```
+
+### `merged.json` (aggregated results)
+
+```json
+{
+  "mergedAt": "2025-05-30T20:41:00.000Z",
+  "inputs": ["run1.json", "run2.json"],
+  "metrics": [
+    {
+      "name": "login",
+      "durations": [30.2, 35.7],
+      "timestamps": ["2025-05-30T20:40:00.000Z","2025-05-30T20:40:01.000Z"],
+      "stats": { "count": 2, "min": 30.2, "max": 35.7, "avg": 32.95 }
+    }
+  ]
+}
+```
+
+### `summary.json` & `index.html`
+
+Generates a summary JSON and an interactive Vega‑Lite HTML report with:
+
+- X-axis: run timestamps  
+- Y-axis: durations  
+- Area under curve, trend line, and min/max/avg rules  
+- Zoom, pan, and tooltips  
+
+---
+
+## Thresholds
+
+Create a `thresholds.json` mapping metric names to numeric limits:
+
+```json
+{
+  "login": 50,
+  "search": 100
+}
+```
+
+Evaluate against thresholds:
+
+```bash
+npx lobo evaluate merged.json -t thresholds.json
+```
+
+Exits non-zero if any metric exceeds its threshold.
+
+---
+
+## Roadmap
+
+- ✅ Core profiling, merging, reporting, and evaluation  
+- 🔜 Adaptive baseline thresholds (historical trend analysis)  
+- 🔜 Plugin system & AI-agent integration  
+- 🔜 CI/CD dashboards and notifications  
+
+---
+
+## Contributing
+
+LoboJS is open source under the MIT license. Contributions are welcome:
+
+- Fork the repo & submit pull requests  
+- File issues for bugs and feature requests  
+- Propose extensions, integrations, or plugin ideas  
+
+---
+
+## Legacy & Acknowledgements
+
+LoboJS is the successor to the original **Lobo Continuous Tuning** (OnCast, 2005) built in Java by Samuel Crescêncio and team. This JS rewrite honors its spirit while embracing modern development workflows.
 
 ---
