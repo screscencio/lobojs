@@ -1,3 +1,5 @@
+![LoboJS Logo](logo-lobo.gif)
+
 # Continuous Performance Tuning with LoboJS
 
 ## 1. Introduction: Continuous Improvement as a Business Imperative
@@ -17,23 +19,23 @@ LoboJS delivers a streamlined, CLI‑driven toolkit for embedding this workflow 
 
 ## 2. Basic Concepts
 
-| Term               | Definition                                                                                 |
-|--------------------|--------------------------------------------------------------------------------------------|
-| **Profile Script** | A JavaScript module (file) containing one or more scenarios to measure via LoboJS APIs.    |
-| **Scenario**       | A named operation or code path to be profiled (e.g. an HTTP request, CPU-bound task).     |
-| **Metric**         | A single measured duration in milliseconds, identified by name.                            |
-| **Raw Run File**   | A JSON snapshot (`lobojs-run-<timestamp>.json`) capturing one invocation’s metrics.        |
-| **Merged History** | An aggregated JSON (`lobojs-merged.json`) combining multiple runs into a time series.      |
+| Term               | Definition                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| **Profile Script** | A JavaScript module (file) containing one or more scenarios to measure via LoboJS APIs. |
+| **Scenario**       | A named operation or code path to be profiled (e.g. an HTTP request, CPU-bound task).   |
+| **Metric**         | A single measured duration in milliseconds, identified by name.                         |
+| **Raw Run File**   | A JSON snapshot (`lobojs-run-<timestamp>.json`) capturing one invocation’s metrics.     |
+| **Merged History** | An aggregated JSON (`lobojs-merged.json`) combining multiple runs into a time series.   |
 
 ## 3. LoboJS Tuning Workflow
 
-| Stage    | Command                                                                                   | Description                                                                                         |
-|:-------- |:----------------------------------------------------------------------------------------- |:--------------------------------------------------------------------------------------------------- |
-| **Run**  | `lobo run <paths> [-o <dir-or-file>]`                                                     | Execute profile scripts and emit timestamped JSON files under `profile_runs/`.                      |
-| **Merge**| `lobo merge <dir-or-files> -o report/lobojs-merged.json`                                  | Incrementally consolidate raw run files into a single history JSON.                                 |
-| **Report**| `lobo report report/lobojs-merged.json -o report`                                        | Generate an interactive HTML dashboard and summary JSON under `report/`.                            |
-| **Eval** | `lobo evaluate report/lobojs-merged.json -t thresholds.json`                              | Compare merged metrics against threshold budgets, exiting non-zero on failures.                     |
-| **CI**   | `lobo ci -p <profiles> -w profile_runs -r report -t thresholds.json`                       | Shorthand that runs Run → Merge → Report → Evaluate in one step (Eval always last).                 |
+| Stage      | Command                                                              | Description                                                                         |
+| :--------- | :------------------------------------------------------------------- | :---------------------------------------------------------------------------------- |
+| **Run**    | `lobo run <paths> [-o <dir-or-file>]`                                | Execute profile scripts and emit timestamped JSON files under `profile_runs/`.      |
+| **Merge**  | `lobo merge <dir-or-files> -o report/lobojs-merged.json`             | Incrementally consolidate raw run files into a single history JSON.                 |
+| **Report** | `lobo report report/lobojs-merged.json -o report`                    | Generate an interactive HTML dashboard and summary JSON under `report/`.            |
+| **Eval**   | `lobo evaluate report/lobojs-merged.json -t thresholds.json`         | Compare merged metrics against threshold budgets, exiting non-zero on failures.     |
+| **CI**     | `lobo ci -p <profiles> -w profile_runs -r report -t thresholds.json` | Shorthand that runs Run → Merge → Report → Evaluate in one step (Eval always last). |
 
 ### 3.1 Run (Profiling)
 
@@ -147,16 +149,16 @@ Profile scripts declare the specific operations (scenarios) to measure. Place th
 
 ```js
 // profiles/fetch_apis.js
-const profile = require('lobojs/src/core/profile');
-const fetch = require('node-fetch');
+const profile = require("lobojs/src/core/profile");
+const fetch = require("node-fetch");
 
 (async () => {
-  await profile('get_products', () =>
-    fetch('https://api.acme-retail.com/products').then((r) => r.json())
+  await profile("get_products", () =>
+    fetch("https://api.acme-retail.com/products").then((r) => r.json())
   );
 
-  await profile('get_checkout', () =>
-    fetch('https://api.acme-retail.com/checkout').then((r) => r.json())
+  await profile("get_checkout", () =>
+    fetch("https://api.acme-retail.com/checkout").then((r) => r.json())
   );
 })();
 ```
@@ -165,16 +167,16 @@ const fetch = require('node-fetch');
 
 ```js
 // profiles/database_metrics.js
-const Telemetry = require('lobojs/src/core/telemetry');
+const Telemetry = require("lobojs/src/core/telemetry");
 
 module.exports = () => {
-  Telemetry.startMetric('db_query');
+  Telemetry.startMetric("db_query");
   // perform your database call here...
-  Telemetry.endMetric('db_query');
+  Telemetry.endMetric("db_query");
 
-  Telemetry.startMetric('cache_lookup');
+  Telemetry.startMetric("cache_lookup");
   // perform cache lookup...
-  Telemetry.endMetric('cache_lookup');
+  Telemetry.endMetric("cache_lookup");
 };
 ```
 
@@ -195,7 +197,7 @@ Lessons learned:
 ## 6. Directory Layout
 
 ```text
-. 
+.
 ├── profiles/                  # Profile scripts (scenarios to measure)
 ├── profile_runs/              # Raw JSON metrics per invocation
 ├── report/                    # Merged history + reports (summary.json, index.html)

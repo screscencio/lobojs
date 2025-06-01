@@ -1,4 +1,6 @@
-# 🐺 LoboJS
+![LoboJS Logo](docs/logo-lobo.gif)
+
+# LoboJS
 
 **Continuous, adaptive, and intelligent performance testing for developers.**
 
@@ -70,6 +72,7 @@ LoboJS is organized into modular packages:
    npm install
    ```
 2. Run performance profiles (scan files or directories; writes timestamped JSON files prefixed with `lobojs-run-` into `profile_runs/` by default, or specify a custom directory):
+
 ```bash
 # Default: create profile_runs/lobojs-run-<ISO-timestamp>.json
 npx lobo run path/to/tests
@@ -79,6 +82,7 @@ npx lobo run path/to/tests -o my_run_folder
 ```
 
 3. Merge runs (incremental merge; processes only new files).
+
 ```bash
 # Merge all runs under profile_runs/ into report/lobojs-merged.json
 npx lobo merge profile_runs/ -o report/lobojs-merged.json
@@ -88,6 +92,7 @@ npx lobo merge run1.json run2.json -o report/lobojs-merged.json
 ```
 
 4. Generate report (reads merged JSON and outputs HTML + summary under `report/`):
+
 ```bash
 npx lobo report report/lobojs-merged.json -o report
 ```
@@ -141,6 +146,7 @@ LoboJS test suites now preserve temporary directories after each run by default,
 ```bash
 npx jest
 ```
+
 If you still encounter segmentation faults (particularly on macOS with Node ≥20), please use the latest LTS Node (18.x) with `nvm use 18`, as some newer Node versions have known issues with Jest and dynamic imports.
 
 If you prefer explicit flags, you can also run:
@@ -154,6 +160,7 @@ Or combined with artifact logging:
 ```bash
 LOBOJS_KEEP_TEST_ARTIFACTS=1 CI=1 npx jest --runInBand
 ```
+
 LoboJS prints the summary and HTML report paths as well as the test directory locations, e.g.:
 
 ```text
@@ -206,9 +213,9 @@ const result = await profile('fetchData', async () => fetch(...));
 
 ### `Telemetry`
 
-- `Telemetry.startMetric(name)`  
-- `Telemetry.endMetric(name)` (throws if no matching start)  
-- `Telemetry.getMetrics()`, `Telemetry.clear()`  
+- `Telemetry.startMetric(name)`
+- `Telemetry.endMetric(name)` (throws if no matching start)
+- `Telemetry.getMetrics()`, `Telemetry.clear()`
 
 ---
 
@@ -240,9 +247,7 @@ npm run perf:ci
 ```json
 {
   "timestamp": "2025-05-30T20:40:00.000Z",
-  "metrics": [
-    { "name": "login", "duration": 32.5 }
-  ]
+  "metrics": [{ "name": "login", "duration": 32.5 }]
 }
 ```
 
@@ -256,7 +261,7 @@ npm run perf:ci
     {
       "name": "login",
       "durations": [30.2, 35.7],
-      "timestamps": ["2025-05-30T20:40:00.000Z","2025-05-30T20:40:01.000Z"],
+      "timestamps": ["2025-05-30T20:40:00.000Z", "2025-05-30T20:40:01.000Z"],
       "stats": { "count": 2, "min": 30.2, "max": 35.7, "avg": 32.95 }
     }
   ]
@@ -267,10 +272,10 @@ npm run perf:ci
 
 Generates a summary JSON and an interactive Vega‑Lite HTML report with:
 
-- X-axis: run timestamps  
-- Y-axis: durations  
-- Area under curve, trend line, and min/max/avg rules  
-- Zoom, pan, and tooltips  
+- X-axis: run timestamps
+- Y-axis: durations
+- Area under curve, trend line, and min/max/avg rules
+- Zoom, pan, and tooltips
 
 ---
 
@@ -297,10 +302,10 @@ Exits non-zero if any metric exceeds its threshold.
 
 ## Roadmap
 
-- ✅ Core profiling, merging, reporting, and evaluation  
-- 🔜 Adaptive baseline thresholds (historical trend analysis)  
-- 🔜 Plugin system & AI-agent integration  
-- 🔜 CI/CD dashboards and notifications  
+- ✅ Core profiling, merging, reporting, and evaluation
+- 🔜 Adaptive baseline thresholds (historical trend analysis)
+- 🔜 Plugin system & AI-agent integration
+- 🔜 CI/CD dashboards and notifications
 
 ---
 
@@ -308,9 +313,9 @@ Exits non-zero if any metric exceeds its threshold.
 
 LoboJS is open source under the MIT license. Contributions are welcome:
 
-- Fork the repo & submit pull requests  
-- File issues for bugs and feature requests  
-- Propose extensions, integrations, or plugin ideas  
+- Fork the repo & submit pull requests
+- File issues for bugs and feature requests
+- Propose extensions, integrations, or plugin ideas
 
 ---
 
