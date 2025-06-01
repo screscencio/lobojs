@@ -2,7 +2,7 @@
  * Runs performance profiles found in specified files or directories.
  * Scans for profile declarations and executes them.
  */
-module.exports = async function run(files, outputFile = 'results.json') {
+module.exports = async function run(files, outputDest = 'profile_runs') {
   const fs = require('fs').promises;
   const path = require('path');
   const chalk = (() => {
@@ -53,15 +53,27 @@ module.exports = async function run(files, outputFile = 'results.json') {
     } catch {
       // ignore if not in cache
     }
-    require(full);
+    {
+      const ret = require(full);
+      if (ret && typeof ret.then === 'function') {
+        await ret;
+      }
+    }
   }
 
   const metrics = Telemetry.getMetrics();
-  const result = {
-    timestamp: new Date().toISOString(),
-    metrics,
-  };
+  const result = { timestamp: new Date().toISOString(), metrics };
 
-  await io.write(outputFile, result);
-  console.log(chalk.green(`Results written to ${outputFile}`));
+  const ext = path.extname(outputDest);
+  if (ext === '.json') {
+    await io.write(outputDest, result);
+    console.log(chalk.green(`Run results written to ${outputDest}`));
+  } else {
+    await fs.mkdir(outputDest, { recursive: true });
+    const safeTs = result.timestamp.replace(/:/g, '-');
+    const filename = `lobojs-run-${safeTs}.json`;
+    const outPath = path.join(outputDest, filename);
+    await io.write(outPath, result);
+    console.log(chalk.green(`Run results written to ${outPath}`));
+  }
 };

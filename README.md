@@ -69,42 +69,41 @@ LoboJS is organized into modular packages:
    ```bash
    npm install
    ```
-2. Run performance profiles (scan files or directories; specify output JSON if desired):
-   ```bash
-   npx lobo run path/to/tests
-   ```
-
-# → ./results.json
-
-npx lobo run path/to/tests -o my-results.json
-
-````
-3. Merge runs:
+2. Run performance profiles (scan files or directories; writes timestamped JSON files into `profile_runs/` by default, or specify a custom directory):
 ```bash
-npx lobo merge run1.json run2.json -o merged.json
-````
+# Default: create profile_runs/<timestamp>.json
+npx lobo run path/to/tests
 
-4. Generate report (JSON summary + interactive HTML/Vega-Lite charts with dynamic shading per data point, min, max, avg & trend lines, tooltips, and zoom/pan):
-   ```bash
-   npx lobo report merged.json -o report
-   ```
-   → Writes `report/summary.json` and `report/index.html` (open in browser for visualization).
+# Custom output directory:
+npx lobo run path/to/tests -o my_run_folder
+```
 
-   The HTML chart displays each run’s timestamp on the x‑axis, the duration curve as an area and trend line (orange), with horizontal rules for the minimum (blue), maximum (dark blue) and average (dashed gray) values.
+3. Merge runs (merge all JSON files in a directory or specify individual files):
+```bash
+# Merge all runs under profile_runs/ into a single JSON
+npx lobo merge profile_runs/ -o report/merged.json
 
-   > *Note*: If a summary JSON metric lacks explicit `timestamps` data (e.g. single-run or manually authored inputs), the report generator will synthesize timestamps at 1-second intervals from the report’s `reportedAt` time, ensuring all data points are shown in the chart.
+# Or merge specific files:
+npx lobo merge run1.json run2.json -o report/merged.json
+```
+
+4. Generate report (reads merged JSON and outputs HTML + summary under `report/`):
+```bash
+npx lobo report report/merged.json -o report
+```
+
 5. Evaluate thresholds (defaults to `./thresholds.json`, or pass custom file):
 
-   ```bash
-   npx lobo evaluate merged.json
-   npx lobo evaluate merged.json -t path/to/thresholds.json
-   ```
+```bash
+npx lobo evaluate report/merged.json
+npx lobo evaluate report/merged.json -t thresholds.json
+```
 
-6. One‑step CI/CD integration:
+6. One-step CI/CD integration (runs profile discovery, merge, report, and evaluation with thresholds; `eval` is executed last):
 
-   ```bash
-   npx lobo ci -p ./profiles -t thresholds.json
-   ```
+```bash
+npx lobo ci -p ./profiles -o report -t thresholds.json
+```
 
 You can also add an NPM script in your `package.json`:
 

@@ -16,6 +16,11 @@
       color: #ff8010;           /* leanit101Orange */
       margin-bottom: 5px;
     }
+    h2 {
+      color: #ff8010;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
     #chart {
       margin-top: 20px;
     }
@@ -93,9 +98,15 @@
         }
       };
 
+      // prepend metric name as a heading for clarity
+      const chartContainer = document.getElementById('chart');
+      const titleElem = document.createElement('h2');
+      titleElem.textContent = m.name;
+      chartContainer.appendChild(titleElem);
+
       const chartDiv = document.createElement('div');
       chartDiv.style.marginTop = '20px';
-      document.getElementById('chart').appendChild(chartDiv);
+      chartContainer.appendChild(chartDiv);
 
       vegaEmbed(chartDiv, spec, { renderer: 'canvas', actions: false })
         .catch(console.error);

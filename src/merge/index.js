@@ -1,6 +1,8 @@
 /**
  * Merge multiple performance result files into a single dataset.
  */
+const fs = require('fs').promises;
+const path = require('path');
 const io = require('../io');
 
 /**
@@ -9,6 +11,16 @@ const io = require('../io');
  * @param {string} output - Path to write the merged JSON file.
  */
 module.exports = async function merge(inputs, output) {
+  if (inputs.length === 1) {
+    const stat = await fs.stat(inputs[0]).catch(() => null);
+    if (stat && stat.isDirectory()) {
+      const files = await fs.readdir(inputs[0]);
+      inputs = files
+        .filter((f) => f.endsWith('.json'))
+        .map((f) => path.join(inputs[0], f))
+        .sort();
+    }
+  }
   const results = await Promise.all(
     inputs.map(async (file) => {
       try {

@@ -7,7 +7,7 @@
     "lobo": "bin/lobo"
   },
   "scripts": {
-    "test": "jest --runInBand --ci",
+    "test": "jest --config=jest.config.js --runInBand --ci --no-cache",
     "perf:ci": "lobo ci -p ./profiles -t thresholds.json"
   },
   "keywords": [
