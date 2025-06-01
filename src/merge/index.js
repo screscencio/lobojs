@@ -37,7 +37,9 @@ module.exports = async function merge(inputs, output) {
   // Determine which input files are new
   const newInputs = inputs.filter((file) => !existingInputs.includes(file));
   if (newInputs.length === 0) {
-    console.log(`No new files to merge in ${output}`);
+    if (process.env.LOBOJS_KEEP_TEST_ARTIFACTS) {
+      console.log(`No new files to merge in ${output}`);
+    }
     return;
   }
 
@@ -78,5 +80,7 @@ module.exports = async function merge(inputs, output) {
     metrics: mergedMetrics,
   };
   await io.write(output, merged);
-  console.log(`Merged ${newInputs.length} new file(s) into ${output}`);
+  if (process.env.LOBOJS_KEEP_TEST_ARTIFACTS) {
+    console.log(`Merged ${newInputs.length} new file(s) into ${output}`);
+  }
 };
