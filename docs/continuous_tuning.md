@@ -1,6 +1,4 @@
-<p>
-  <img src="logo-lobo.png" alt="LoboJS Logo" width="200">
-</p>
+![LoboJS Logo](./logo-lobo.png)
 
 # Continuous Performance Tuning with LoboJS
 
