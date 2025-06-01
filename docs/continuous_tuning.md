@@ -1,4 +1,4 @@
-![LoboJS Logo](./logo-lobo.png)
+![LoboJS Logo](./logo_lobo.png)
 
 # Continuous Performance Tuning with LoboJS
 

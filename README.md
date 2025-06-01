@@ -1,4 +1,4 @@
-![LoboJS Logo](./docs/logo-lobo.png)
+![LoboJS Logo](./docs/logo_lobo.png)
 
 # LoboJS
 
