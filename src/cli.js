@@ -36,9 +36,9 @@ program
 
 program
   .command("merge")
-  .description("Merge multiple performance result files")
-  .argument("<inputs...>", "List of result files to merge")
-  .option("-o, --output <file>", "Output file", "merged.json")
+  .description("Merge multiple performance result files into a unified history (incremental if re-run)")
+  .argument("<inputs...>", "List of result files or a directory to merge")
+  .option("-o, --output <file>", "Output merged JSON file", "report/lobojs-merged.json")
   .action(async (inputs, options) => {
     try {
       await merge(inputs, options.output);
@@ -89,20 +89,16 @@ program
   .command("ci")
   .description("Run, merge, report and evaluate in one step (for CI/CD)")
   .option("-p, --paths <paths...>", "paths to scan for profiles", ["."])
-  .option(
-    "-o, --output-dir <dir>",
-    "output directory for results and reports",
-    "."
-  )
-  .option("-t, --thresholds <file>", "thresholds JSON file", "thresholds.json")
+  .option("-w, --runs-dir <dir>", "Directory for raw profile run JSON files", "profile_runs")
+  .option("-r, --report-dir <dir>", "Directory for merged results and final reports", "report")
+  .option("-t, --thresholds <file>", "Thresholds JSON file", "thresholds.json")
   .action(async (opts) => {
     const path = require("path");
     try {
-      const runOut = path.join(opts.outputDir, "run.json");
-      await run(opts.paths, runOut);
-      const mergedOut = path.join(opts.outputDir, "merged.json");
-      await merge([runOut], mergedOut);
-      await report(mergedOut, opts.outputDir);
+      await run(opts.paths, opts.runsDir);
+      const mergedOut = path.join(opts.reportDir, "lobojs-merged.json");
+      await merge([opts.runsDir], mergedOut);
+      await report(mergedOut, opts.reportDir);
       const { overallPass } = await evaluate(mergedOut, opts.thresholds);
       process.exit(overallPass ? 0 : 1);
     } catch (err) {

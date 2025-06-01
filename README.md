@@ -69,40 +69,44 @@ LoboJS is organized into modular packages:
    ```bash
    npm install
    ```
-2. Run performance profiles (scan files or directories; writes timestamped JSON files into `profile_runs/` by default, or specify a custom directory):
+2. Run performance profiles (scan files or directories; writes timestamped JSON files prefixed with `lobojs-run-` into `profile_runs/` by default, or specify a custom directory):
 ```bash
-# Default: create profile_runs/<timestamp>.json
+# Default: create profile_runs/lobojs-run-<ISO-timestamp>.json
 npx lobo run path/to/tests
 
 # Custom output directory:
 npx lobo run path/to/tests -o my_run_folder
 ```
 
-3. Merge runs (merge all JSON files in a directory or specify individual files):
+3. Merge runs (incremental merge; processes only new files).
 ```bash
-# Merge all runs under profile_runs/ into a single JSON
-npx lobo merge profile_runs/ -o report/merged.json
+# Merge all runs under profile_runs/ into report/lobojs-merged.json
+npx lobo merge profile_runs/ -o report/lobojs-merged.json
 
 # Or merge specific files:
-npx lobo merge run1.json run2.json -o report/merged.json
+npx lobo merge run1.json run2.json -o report/lobojs-merged.json
 ```
 
 4. Generate report (reads merged JSON and outputs HTML + summary under `report/`):
 ```bash
-npx lobo report report/merged.json -o report
+npx lobo report report/lobojs-merged.json -o report
 ```
 
 5. Evaluate thresholds (defaults to `./thresholds.json`, or pass custom file):
 
 ```bash
-npx lobo evaluate report/merged.json
-npx lobo evaluate report/merged.json -t thresholds.json
+npx lobo evaluate report/lobojs-merged.json
+npx lobo evaluate report/lobojs-merged.json -t thresholds.json
 ```
 
-6. One-step CI/CD integration (runs profile discovery, merge, report, and evaluation with thresholds; `eval` is executed last):
+6. One-step CI/CD integration (runs profile discovery, merge, report, and evaluation with thresholds; `eval` is executed last).
 
 ```bash
-npx lobo ci -p ./profiles -o report -t thresholds.json
+# Using defaults (profile_runs & report directories):
+npx lobo ci -p ./profiles -t thresholds.json
+
+# Or specify custom directories:
+npx lobo ci -p ./profiles -w profile_runs -r report -t thresholds.json
 ```
 
 You can also add an NPM script in your `package.json`:
@@ -313,5 +317,15 @@ LoboJS is open source under the MIT license. Contributions are welcome:
 ## Legacy & Acknowledgements
 
 LoboJS is the successor to the original **Lobo Continuous Tuning** (OnCast, 2005) built in Java by Samuel Crescêncio and team. This JS rewrite honors its spirit while embracing modern development workflows.
+
+## Demo Project
+
+A live demo project showcasing LoboJS in action (profiling public APIs, generating reports, CI integration) is available at:
+
+https://github.com/screscencio/lobojs-demo
+
+## Extended Documentation
+
+For a comprehensive guide on Continuous Performance Tuning with LoboJS (workflow, examples, and roadmap), see [docs/continuous_tuning.md](docs/continuous_tuning.md).
 
 ---
