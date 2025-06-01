@@ -1,5 +1,5 @@
 <p>
-  <img src="logo-lobo.gif" alt="LoboJS Logo" width="200">
+  <img src="logo-lobo.png" alt="LoboJS Logo" width="200">
 </p>
 
 # Continuous Performance Tuning with LoboJS

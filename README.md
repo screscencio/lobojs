@@ -1,5 +1,5 @@
 <p>
-  <img src="docs/logo-lobo.gif" alt="LoboJS Logo" width="200">
+  <img src="docs/logo-lobo.png" alt="LoboJS Logo" width="200">
 </p>
 
 # LoboJS
