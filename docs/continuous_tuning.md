@@ -1,4 +1,6 @@
-![LoboJS Logo](logo-lobo.gif)
+<p>
+  <img src="logo-lobo.gif" alt="LoboJS Logo" width="200">
+</p>
 
 # Continuous Performance Tuning with LoboJS
 

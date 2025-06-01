@@ -1,4 +1,6 @@
-![LoboJS Logo](docs/logo-lobo.gif)
+<p>
+  <img src="docs/logo-lobo.gif" alt="LoboJS Logo" width="200">
+</p>
 
 # LoboJS
 
