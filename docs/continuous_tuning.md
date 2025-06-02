@@ -214,8 +214,9 @@ Lessons learned:
 
 ## 8. References & Acknowledgements
 
-- Original Lobo Continuous Tuning (Java) by Samuel Crescêncio & OnCast (2005): http://lobo.sourceforge.net/manual_en.htm
+- Original Lobo Continuous Tuning (Java) by Samuel Crescêncio & OnCast (2005): https://sourceforge.net/p/lobo-ct/code/HEAD/tree/oncast-lobo-1.0.alpha.zip
 - LoboJS GitHub Repository: https://github.com/screscencio/lobojs
 - Demo Project: https://github.com/screscencio/lobojs-demo
+- **Have questions or feedback? Drop me a line:** [screscencio@leanit101.com](mailto:screscencio@leanit101.com)
 
 _End of guide._
