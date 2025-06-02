@@ -1,12 +1,11 @@
-![LoboJS Logo](./docs/logo_lobo.png)
-
-# LoboJS
-
-**Continuous, adaptive, and intelligent performance testing for developers.**
-
-_Reborn from legacy. Powered by simplicity and insight._
-
----
+<p align="left">
+  <img src="docs/logo_lobo.png" alt="LoboJS Logo" width="100" style="vertical-align: middle; margin-right: 12px;" />
+  <span style="display: inline-block; vertical-align: middle; text-align: left;">
+    <span style="font-size: 2em; font-weight: bold;">LoboJS</span><br>
+    <span style="font-size: 1.1em; color: #555;">Continuous, adaptive, and intelligent performance testing for developers.</span><br>
+    <span style="font-style: italic; color: #777;">Reborn from legacy. Powered by simplicity and insight.</span>
+  </span>
+</p>
 
 ## What is LoboJS?
 
@@ -331,6 +330,8 @@ https://github.com/screscencio/lobojs-demo
 
 ## Extended Documentation
 
-For a comprehensive guide on Continuous Performance Tuning with LoboJS (workflow, examples, and roadmap), see [docs/continuous_tuning.md](docs/continuous_tuning.md).
+For a comprehensive guide on Continuous Performance Tuning with LoboJS (workflow, examples, and roadmap):
+
+📘 [Read the full Continuous Tuning Guide on GitHub ›](https://github.com/screscencio/lobojs/blob/main/docs/continuous_tuning.md)
 
 ---

@@ -18,6 +18,13 @@
   ],
   "author": "@screscencio",
   "license": "MIT",
+  "files": [
+    "bin/",
+    "src/",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "commander": "^11.0.0",
     "chalk": "^4.1.2"
