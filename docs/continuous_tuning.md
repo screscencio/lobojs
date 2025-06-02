@@ -1,8 +1,6 @@
 <p align="left">
-  <img src="logo_lobo.png" alt="LoboJS Logo" width="100" style="vertical-align: middle; margin-right: 12px;" />
-  <span style="display: inline-block; vertical-align: middle; text-align: left;">
-    <span style="font-size: 2em; font-weight: bold;">Continuous Performance Tuning with LoboJS</span><br>
-  </span>
+  <img src="https://raw.githubusercontent.com/screscencio/lobojs/main/docs/logo_lobo.png" width="200" alt="LoboJS Logo" />
+  <h1 align="left">Continuous Performance Tuning with LoboJS</h1>
 </p>
 
 ## 1. Introduction: Continuous Improvement as a Business Imperative

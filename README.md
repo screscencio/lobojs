@@ -1,11 +1,9 @@
 <p align="left">
-  <img src="docs/logo_lobo.png" alt="LoboJS Logo" width="100" style="vertical-align: middle; margin-right: 12px;" />
-  <span style="display: inline-block; vertical-align: middle; text-align: left;">
-    <span style="font-size: 2em; font-weight: bold;">LoboJS</span><br>
-    <span style="font-size: 1.1em; color: #555;">Continuous, adaptive, and intelligent performance testing for developers.</span><br>
-    <span style="font-style: italic; color: #777;">Reborn from legacy. Powered by simplicity and insight.</span>
-  </span>
+  <img src="https://raw.githubusercontent.com/screscencio/lobojs/main/docs/logo_lobo.png" width="200" alt="LoboJS Logo" />
+  <h1 align="left">LoboJS</h1>
 </p>
+<p align="left"><em>Continuous, adaptive, and intelligent performance testing for developers.</em></p>
+<p align="left"><em>Reborn from legacy. Powered by simplicity and insight.</em></p>
 
 ## What is LoboJS?
 
