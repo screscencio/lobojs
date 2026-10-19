@@ -30,6 +30,7 @@
     "chalk": "^4.1.2"
   },
   "devDependencies": {
-    "jest": "^29.6.1"
+    "jest": "^29.6.1",
+    "vitest": "^3.2.7"
   }
 }
