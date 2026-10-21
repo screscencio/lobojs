@@ -78,6 +78,26 @@ npx lobo run path/to/tests
 npx lobo run path/to/tests -o my_run_folder
 ```
 
+   **Using vitest?** Write profiles as vitest test files and pass `--runner vitest`. LoboJS runs them with your project's own vitest, so TypeScript, ESM, path aliases and setup files work as in your other tests. Files run one at a time, and the run file has the same format as with the default runner, so the next steps stay the same.
+
+```ts
+// profiles/card.perf.test.ts
+import { test } from 'vitest';
+import profile from 'lobojs/src/core/profile';
+import { saveCard } from '../src/cards';
+
+test('a card save', async () => {
+  await profile('card_save', () => saveCard({ id: 42, title: 'renamed' }));
+});
+```
+
+```bash
+npx lobo run profiles --runner vitest
+npx lobo ci --runner vitest -p profiles -t thresholds.json
+```
+
+   Profiles must match the `include` patterns of your vitest config (the default patterns match `*.test.ts`), and vitest must be installed in your project. The default runner (`--runner node`) requires each `.js` file as before.
+
 3. Merge runs (incremental merge; processes only new files).
 
 ```bash

@@ -2,7 +2,10 @@
  * Telemetry module for starting and ending metrics.
  * Stores metric data for analysis and reporting.
  */
+const fs = require('fs');
+const path = require('path');
 const { performance } = require('perf_hooks');
+const { threadId } = require('worker_threads');
 
 /**
  * Telemetry module for recording named metrics with durations.
@@ -29,6 +32,12 @@ static endMetric(name) {
   const duration = performance.now() - start;
   this._metrics.push({ name, duration });
   this._startTimes.delete(name);
+  // runners that execute profiles in worker processes (e.g. vitest) collect metrics from here
+  const dir = process.env.LOBOJS_METRICS_DIR;
+  if (dir) {
+    const file = path.join(dir, `metrics-${process.pid}-${threadId}.jsonl`);
+    fs.appendFileSync(file, JSON.stringify({ name, duration }) + '\n');
+  }
 }
 
   /**

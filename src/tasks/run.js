@@ -1,8 +1,9 @@
 /**
  * Runs performance profiles found in specified files or directories.
  * Scans for profile declarations and executes them.
+ * The `node` runner requires each JS file; the `vitest` runner hands the paths to the project's vitest.
  */
-module.exports = async function run(files, outputDest = 'profile_runs') {
+module.exports = async function run(files, outputDest = 'profile_runs', { runner = 'node' } = {}) {
   const fs = require('fs').promises;
   const path = require('path');
   const chalk = (() => {
@@ -12,7 +13,36 @@ module.exports = async function run(files, outputDest = 'profile_runs') {
   const Telemetry = require('../core/telemetry');
   const io = require('../io');
 
+  if (runner !== 'node' && runner !== 'vitest') {
+    throw new Error(`Unknown runner '${runner}'. Use 'node' or 'vitest'.`);
+  }
+
   const targets = Array.isArray(files) && files.length > 0 ? files : ['.'];
+
+  async function writeResult(metrics) {
+    const result = { timestamp: new Date().toISOString(), metrics };
+
+    const ext = path.extname(outputDest);
+    if (ext === '.json') {
+      await io.write(outputDest, result);
+      console.log(chalk.green(`Run results written to ${outputDest}`));
+    } else {
+      await fs.mkdir(outputDest, { recursive: true });
+      const safeTs = result.timestamp.replace(/:/g, '-');
+      const filename = `lobojs-run-${safeTs}.json`;
+      const outPath = path.join(outputDest, filename);
+      await io.write(outPath, result);
+      console.log(chalk.green(`Run results written to ${outPath}`));
+    }
+  }
+
+  if (runner === 'vitest') {
+    console.log(chalk.blue(`Running vitest profiles in: ${targets.join(', ')}`));
+    const runVitest = require('./vitest');
+    await writeResult(await runVitest(targets));
+    return;
+  }
+
   console.log(chalk.blue(`Scanning for JS files in: ${targets.join(', ')}`));
 
   async function collectFiles(paths) {
@@ -61,19 +91,5 @@ module.exports = async function run(files, outputDest = 'profile_runs') {
     }
   }
 
-  const metrics = Telemetry.getMetrics();
-  const result = { timestamp: new Date().toISOString(), metrics };
-
-  const ext = path.extname(outputDest);
-  if (ext === '.json') {
-    await io.write(outputDest, result);
-    console.log(chalk.green(`Run results written to ${outputDest}`));
-  } else {
-    await fs.mkdir(outputDest, { recursive: true });
-    const safeTs = result.timestamp.replace(/:/g, '-');
-    const filename = `lobojs-run-${safeTs}.json`;
-    const outPath = path.join(outputDest, filename);
-    await io.write(outPath, result);
-    console.log(chalk.green(`Run results written to ${outPath}`));
-  }
+  await writeResult(Telemetry.getMetrics());
 };

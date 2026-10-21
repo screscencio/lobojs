@@ -24,9 +24,10 @@ program
   .description("Run performance profiles")
   .argument("[files...]", "Files or directories to scan for profiles")
   .option("-o, --output <dest>", "Output directory or file for profile run(s)", "profile_runs")
+  .option("--runner <name>", "How to execute profiles: node (require each .js file) or vitest", "node")
   .action(async (files, options) => {
     try {
-      await run(files, options.output);
+      await run(files, options.output, { runner: options.runner });
       process.exit(0);
     } catch (err) {
       console.error(err.message || err);
@@ -92,10 +93,11 @@ program
   .option("-w, --runs-dir <dir>", "Directory for raw profile run JSON files", "profile_runs")
   .option("-r, --report-dir <dir>", "Directory for merged results and final reports", "report")
   .option("-t, --thresholds <file>", "Thresholds JSON file", "thresholds.json")
+  .option("--runner <name>", "How to execute profiles: node (require each .js file) or vitest", "node")
   .action(async (opts) => {
     const path = require("path");
     try {
-      await run(opts.paths, opts.runsDir);
+      await run(opts.paths, opts.runsDir, { runner: opts.runner });
       const mergedOut = path.join(opts.reportDir, "lobojs-merged.json");
       await merge([opts.runsDir], mergedOut);
       await report(mergedOut, opts.reportDir);
